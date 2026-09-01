@@ -90,7 +90,7 @@ export default function Contact() {
   return (
     <div
       id="contact"
-      className="px-3 mt-32 xl:px-32 lg:px-5 sm:px-5"
+      className="px-3 mt-32 xl:px-32 lg:px-5 sm:px-5 mb-20 lg:mb-32"
     >
       <h1 className="text-center lg:text-5xl mobile-m:text-4xl text-3xl font-bold tracking-wide lg:py-3 pb-5 sm:pb-4 bg-gradient-to-b from-[#0077C0] via-[#0077C0] to-[#C7EEFF] bg-clip-text text-transparent">
         -- Contact --

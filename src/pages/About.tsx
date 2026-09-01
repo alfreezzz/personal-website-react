@@ -3,6 +3,7 @@ import profileImage from "../assets/images/Iza.webp";
 import cvFile from "../assets/files/CV_Alfriza Akhmad Rahadi.pdf";
 import { skills } from "../data/skills";
 import { techStackRegistry } from "../data/techStack";
+import DepthText from "../components/DepthText";
 
 interface GithubUser {
   public_repos: number;
@@ -41,7 +42,25 @@ export default function About() {
 
   return (
     <div id="about" className="px-3 mt-32 lg:mt-36 xl:px-32 sm:px-5">
-      <div className="relative flex flex-col items-center px-3 about sm:flex-row lg:gap-0 sm:gap-12 lg:px-8 sm:px-5">
+        <div className="flex justify-center">
+            <DepthText
+                text="Who Am I?"
+                layers={34}
+                depth={2.4}
+                faceColor="#f8fafc"
+                depthColor="#7c3aed"
+                tilt={7.5}
+                pointerTracking
+                smoothing={0.14}
+                perspective={900}
+                autoOrbit
+                orbitSpeed={0.35}
+                fontWeight={900}
+                className="text-center lg:text-6xl sm:text-4xl text-5xl font-bold tracking-wide"
+                shadow
+            />
+        </div>
+      <div className="relative flex flex-col items-center px-3 about sm:flex-row lg:gap-0 sm:gap-12 lg:px-8 sm:px-5 mt-0 sm:mt-4">
         {/* Image Container with Centered Circle */}
         <div className="relative w-full py-8 sm:w-2/5">
           {/* Animated Rotating Line Container */}
@@ -96,11 +115,6 @@ export default function About() {
           />
         </div>
         <div className="w-full sm:w-3/5">
-          <div className="flex justify-between mb-3">
-            <h1 className="text-left lg:text-4xl text-3xl font-bold tracking-wide bg-gradient-to-b from-[#0077C0] via-[#0077C0] to-[#C7EEFF] bg-clip-text text-transparent">
-              -- Me! --
-            </h1>
-          </div>
           <div className="font-light leading-relaxed tracking-wide text-justify sm:text-sm lg:text-base">
             <p>
               Hi, my name is <span className="font-medium">Alfriza Akhmad Rahadi</span>, you can

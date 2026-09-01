@@ -2,7 +2,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="container max-w-none py-6 mx-auto text-center border xl:rounded-t-full rounded-t-3xl border-[#0077C0] lg:mt-32 mt-20">
+    <footer className="container max-w-none py-6 mx-auto text-center border xl:rounded-t-full rounded-t-3xl border-[#0077C0]">
       <p className="font-sans text-xs tracking-wider sm:text-sm">
         Made with ❤️ by
         <a
