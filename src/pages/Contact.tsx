@@ -169,7 +169,7 @@ export default function Contact() {
   return (
     <div
       id="contact"
-      className="px-3 mt-32 xl:px-32 lg:px-5 sm:px-5 mb-20 lg:mb-32"
+      className="px-3 xl:px-32 lg:px-5 sm:px-5 mb-24 lg:mb-32 overflow-x-hidden"
     >
       <div
         ref={containerRef}
@@ -193,12 +193,12 @@ export default function Contact() {
 
       <div className="w-24 h-px mx-auto bg-gradient-to-r from-transparent via-[#0077C0] to-transparent" />
 
-      <div className="flex items-center gap-16 mt-12 max-lg:flex-col lg:mt-16">
+      <div className="flex flex-col items-stretch w-full max-w-full gap-10 mt-12 min-w-0 lg:flex-row lg:gap-16 lg:mt-16">
         {/* Contact form styled as a tablet / handheld device */}
-        <div className="relative lg:w-[50%] w-full max-w-sm mx-auto lg:max-w-none">
-          <div className="pointer-events-none absolute -inset-6 -z-10 rounded-[3rem] bg-[#0077C0]/10 blur-3xl" />
+        <div className="relative w-full min-w-0 max-w-sm mx-auto lg:w-1/2 lg:max-w-none overflow-hidden">
+          <div className="pointer-events-none absolute inset-0 -z-10 rounded-[3rem] bg-[#0077C0]/10 blur-3xl" />
 
-          <div className="relative rounded-[2.5rem] bg-neutral-900 p-3 sm:p-4 ring-1 ring-white/10 shadow-2xl shadow-black/60">
+          <div className="relative rounded-[2.5rem] bg-neutral-900 p-3 sm:p-4 ring-1 ring-white/10 shadow-2xl shadow-black/60 max-w-full overflow-hidden">
             {/* decorative side buttons */}
             <span className="absolute -left-[3px] top-24 h-8 w-[3px] rounded-full bg-white/10" />
             <span className="absolute -left-[3px] top-36 h-12 w-[3px] rounded-full bg-white/10" />
@@ -276,7 +276,7 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={!isFormValid || status === "sending"}
-                  className={`relative inline-flex h-12 active:scale-95 transistion overflow-hidden rounded-lg p-[1px] focus:outline-none ${
+                  className={`relative inline-flex h-12 active:scale-95 transition overflow-hidden rounded-lg p-[1px] focus:outline-none ${
                     !isFormValid || status === "sending"
                       ? "opacity-50 cursor-not-allowed"
                       : ""
@@ -336,11 +336,11 @@ export default function Contact() {
         </div>
 
         {/* Social links as individual cards */}
-        <div className="flex flex-col w-full gap-4 lg:w-[50%]">
+        <div className="flex flex-col w-full min-w-0 max-w-full gap-4 lg:w-1/2">
           {socialLinks.map((social) => (
             <div
               key={social.key}
-              className="flex gap-4 p-5 transition duration-300 border group rounded-2xl border-white/10 bg-white/[0.03] hover:-translate-y-1 hover:border-[#C7EEFF]/40 hover:bg-white/[0.06] hover:shadow-lg hover:shadow-black/30"
+              className="flex min-w-0 gap-4 p-5 transition duration-300 border group rounded-2xl border-white/10 bg-white/[0.03] hover:-translate-y-1 hover:border-[#C7EEFF]/40 hover:bg-white/[0.06] hover:shadow-lg hover:shadow-black/30"
             >
               <a
                 href={social.href}
@@ -360,11 +360,11 @@ export default function Contact() {
                 </p>
                 <a
                   href={social.href}
-                  className="inline-flex items-center justify-center font-medium tracking-wider transition group/link"
+                  className="inline-flex items-center justify-start max-w-full font-medium tracking-wider transition group/link"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <span className="text-sm sm:text-base text-[#C7EEFF] group-hover/link:underline">
+                  <span className="text-sm sm:text-base text-[#C7EEFF] group-hover/link:underline break-words">
                     {social.ctaLabel}
                   </span>
                   {arrowIcon}

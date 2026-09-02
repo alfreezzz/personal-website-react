@@ -51,10 +51,12 @@ function App() {
                   Who am I?
                 </ScrollFloat>
               </div>
-              <About />
-              <Experience />
-              <Project onMissingProjectUrl={() => navigate("/not-found")} />
-              <Contact />
+              <div className="flex flex-col min-w-0 gap-y-24 lg:gap-y-32">
+                <About />
+                <Experience />
+                <Project onMissingProjectUrl={() => navigate("/not-found")} />
+                <Contact />
+              </div>
             </>
           }
         />

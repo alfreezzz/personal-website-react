@@ -41,7 +41,7 @@ export default function About() {
   }, []);
 
   return (
-    <div id="about" className="px-3 mt-32 lg:mt-36 xl:px-32 sm:px-5">
+    <div id="about" className="px-3 xl:px-32 sm:px-5">
         <div className="flex justify-center">
             <DepthText
                 text="Me!"
@@ -56,11 +56,11 @@ export default function About() {
                 autoOrbit
                 orbitSpeed={0.35}
                 fontWeight={900}
-                className="text-center lg:text-6xl sm:text-4xl text-5xl font-bold tracking-wide"
+                className="text-center lg:text-6xl sm:text-4xl text-6xl font-bold tracking-wide mb-0 sm:mb-4 lg:mb-0"
                 shadow
             />
         </div>
-      <div className="relative flex flex-col items-center px-3 about sm:flex-row lg:gap-0 sm:gap-12 lg:px-8 sm:px-5 mt-0 sm:mt-4">
+      <div className="relative flex flex-col items-center px-3 about sm:flex-row lg:gap-0 sm:gap-12 lg:px-8 sm:px-5">
         {/* Image Container with Centered Circle */}
         <div className="relative z-0 w-full py-8 sm:w-2/5">
           {/* <!-- Animated Rotating Line Container --> */}

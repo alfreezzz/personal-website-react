@@ -78,7 +78,7 @@ export default function Experience() {
     }`;
 
   return (
-    <div id="experience" className="relative mt-24 sm:mt-32 xl:mx-32 lg:mx-10 mx-4 overflow-x-hidden rounded-2xl sm:rounded-3xl">
+    <div id="experience" className="relative xl:mx-32 lg:mx-10 mx-4 overflow-x-hidden rounded-2xl sm:rounded-3xl">
       {/* Ambient glow di belakang section */}
       <div
         className="pointer-events-none absolute inset-x-0 -top-12 h-40 sm:h-48 bg-[#0077C0]/10 blur-3xl"

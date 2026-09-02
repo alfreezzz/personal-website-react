@@ -181,7 +181,10 @@ export default function Project({ onMissingProjectUrl }: ProjectProps) {
   };
 
   return (
-    <div id="project" className="px-3 mx-auto mt-32 xl:px-32 sm:px-5">
+    <div
+      id="project"
+      className="w-full min-w-0 px-3 mx-auto overflow-hidden xl:px-32 sm:px-5"
+    >
       <div className="relative">
         <div className="relative z-0">
           <WarpText
