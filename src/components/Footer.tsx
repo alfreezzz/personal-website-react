@@ -1,8 +1,28 @@
+import PixelSnow from "./PixelSnow";
+
 export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="container max-w-none py-6 mx-auto text-center border xl:rounded-t-full rounded-t-3xl border-[#0077C0]">
+    <footer 
+      style={{ width: '100%', height: 'auto', position: 'relative' }} 
+      className="max-w-none py-6 mx-auto text-center border rounded-t-xl border-[#E3E4ED]/20 backdrop-blur-md shadow-[0_0px_4px_rgb(0,119,192)]">
+        <div className="absolute inset-0 pointer-events-none">
+          <PixelSnow 
+            color="#E3E4ED"
+            flakeSize={0.01}
+            minFlakeSize={1.25}
+            pixelResolution={1000}
+            speed={1.25}
+            density={0.7}
+            direction={125}
+            brightness={1}
+            depthFade={8}
+            farPlane={20}
+            gamma={0.4545}
+            variant="snowflake"
+          />
+        </div>
       <p className="font-sans text-xs tracking-wider sm:text-sm">
         Made with ❤️ by
         <a
@@ -12,7 +32,7 @@ export default function Footer() {
           className="text-[#00a3c0] text-base hover:underline decoration-2 decoration-dashed ml-1 font-pixelsans"
         >
           Alfriza Akhmad Rahadi.
-        </a>
+        </a>{" "}
         <span className="max-mobile-m:hidden">&copy;{year}</span>
       </p>
       <span className="text-sm mobile-m:hidden">&copy;{year}</span>

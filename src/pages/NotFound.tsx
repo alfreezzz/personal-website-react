@@ -38,20 +38,32 @@ export default function NotFound({ onBack }: NotFoundProps) {
                 <h2 className="mt-3 mb-3 text-xs italic tracking-wider text-center font-extralight lg:text-base mobile-m:text-sm">
                     The page you are looking for is not available
                 </h2>
+
                 <button
-                type="button"
-                onClick={onBack}
-                className="mt-4 inline-flex group drop-shadow-[0_1px_3px_rgb(199,238,255)] hover:brightness-150 font-semibold bg-black border-1 border-[#C7EEFF] items-center justify-center rounded-lg sm:px-4 px-3 py-1.5 transition"
+                    type="button"
+                    onClick={onBack}
+                    className="group relative mt-4 inline-flex items-center justify-center gap-1.5 rounded-full px-5 py-2 sm:px-6 sm:py-2.5 overflow-hidden isolate transition-transform duration-300 ease-out hover:scale-[1.04] active:scale-[0.97]"
                 >
-                <svg
-                    className="w-4 h-4 lg:w-5 lg:h-5 mr-1 group-hover:-translate-x-1.5 transition"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 -960 960 960"
-                    fill="#C7EEFF"
-                >
-                    <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" />
-                </svg>
-                <span className="sm:text-base text-sm text-[#C7EEFF]">Go back</span>
+                    {/* base fill */}
+                    <span className="absolute inset-0 -z-10 rounded-full bg-black/60 backdrop-blur-sm border border-[#C7EEFF]/40 transition-colors duration-300 group-hover:border-[#C7EEFF]/90" />
+
+                    {/* soft glow yang muncul saat hover */}
+                    <span className="absolute inset-0 -z-20 rounded-full bg-[#C7EEFF] blur-xl opacity-0 scale-90 transition-all duration-300 group-hover:opacity-40 group-hover:scale-110" />
+
+                    {/* gradient sheen halus yang bergerak */}
+                    <span className="pointer-events-none absolute inset-0 -z-10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[linear-gradient(115deg,transparent_20%,rgba(199,238,255,0.35)_50%,transparent_80%)] bg-[length:200%_100%] bg-[position:100%_0] group-hover:bg-[position:0%_0] transition-[background-position]" />
+
+                    <svg
+                        className="relative w-4 h-4 lg:w-5 lg:h-5 text-[#C7EEFF] group-hover:-translate-x-1 transition-transform duration-300"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 -960 960 960"
+                        fill="currentColor"
+                    >
+                        <path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" />
+                    </svg>
+                    <span className="relative sm:text-base text-sm font-medium text-[#C7EEFF] group-hover:text-white transition-colors duration-300">
+                        Go back
+                    </span>
                 </button>
             </div>
         </main>
