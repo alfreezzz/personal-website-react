@@ -8,6 +8,7 @@ import Experience from "./pages/Experience"
 import Hero from "./pages/Hero"
 import NotFound from "./pages/NotFound"
 import Project from "./pages/Project"
+import ScrollFloat from "./components/ScrollFloat"
 
 function App() {
   const location = useLocation()
@@ -38,6 +39,18 @@ function App() {
           element={
             <>
               <Hero />
+              <div className="flex justify-center">
+                <ScrollFloat
+                  textClassName="text-4xl sm:text-5xl lg:text-8xl my-64 font-pixelmono text-[#C7EEFF] text-center"
+                  animationDuration={1}
+                  ease='back.inOut(2)'
+                  scrollStart='top bottom'
+                  scrollEnd='center bottom-=50%'
+                  stagger={0.03}
+                >
+                  Who am I?
+                </ScrollFloat>
+              </div>
               <About />
               <Experience />
               <Project onMissingProjectUrl={() => navigate("/not-found")} />

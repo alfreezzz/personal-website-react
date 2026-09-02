@@ -44,7 +44,7 @@ export default function About() {
     <div id="about" className="px-3 mt-32 lg:mt-36 xl:px-32 sm:px-5">
         <div className="flex justify-center">
             <DepthText
-                text="Who Am I?"
+                text="Me!"
                 layers={34}
                 depth={2.4}
                 faceColor="#f8fafc"
@@ -62,31 +62,51 @@ export default function About() {
         </div>
       <div className="relative flex flex-col items-center px-3 about sm:flex-row lg:gap-0 sm:gap-12 lg:px-8 sm:px-5 mt-0 sm:mt-4">
         {/* Image Container with Centered Circle */}
-        <div className="relative w-full py-8 sm:w-2/5">
-          {/* Animated Rotating Line Container */}
-          <div className="absolute w-10/12 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 lg:w-64 sm:w-56 aspect-square">
-            {/* Rotating SVG Line */}
+        <div className="relative z-0 w-full py-8 sm:w-2/5">
+          {/* <!-- Animated Rotating Line Container --> */}
+          <div
+            className="absolute w-10/12 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 lg:w-64 sm:w-56 aspect-square"
+          >
+            {/* <!-- Rotating SVG Line --> */}
             <svg
               viewBox="0 0 220 220"
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%+40px)] h-[calc(100%+40px)] z-[-2]"
             >
               <defs>
-                {/* Gradient Definition */}
-                <linearGradient id="gradientLine" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" style={{ stopColor: "#0077c0", stopOpacity: 1 }} />
-                  <stop offset="100%" style={{ stopColor: "#c7eeff", stopOpacity: 0 }} />
+                {/* <!-- Gradient Definition --> */}
+                <linearGradient
+                  id="gradientLine"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop
+                    offset="0%"
+                    style={{ stopColor: "#0077c0", stopOpacity: 1 }}
+                  />
+                  <stop
+                    offset="100%"
+                    style={{ stopColor: "#c7eeff", stopOpacity: 0 }}
+                  />
                 </linearGradient>
 
-                {/* Mask to fade out bottom part */}
+                {/* <!-- Mask to fade out bottom part --> */}
                 <mask id="fade-mask">
                   <circle cx="110" cy="110" r="105" fill="white" />
-                  <rect x="0" y="110" width="220" height="110" fill="url(#bottomFadeGradient)" />
+                  <rect
+                    x="0"
+                    y="110"
+                    width="220"
+                    height="110"
+                    fill="url(#bottomFadeGradient)"
+                  />
                 </mask>
 
-                {/* Gradient for bottom fade */}
+                {/* <!-- Gradient for bottom fade --> */}
                 <linearGradient id="bottomFadeGradient">
-                  <stop offset="0%" stopColor="white" stopOpacity={1} />
-                  <stop offset="100%" stopColor="white" stopOpacity={0} />
+                  <stop offset="0%" stop-color="white" stop-opacity="1" />
+                  <stop offset="100%" stop-color="white" stop-opacity="0" />
                 </linearGradient>
               </defs>
 
@@ -96,18 +116,20 @@ export default function About() {
                 r="105"
                 fill="none"
                 stroke="url(#gradientLine)"
-                strokeWidth="4"
-                strokeLinecap="round"
+                stroke-width="4"
+                stroke-linecap="round"
                 mask="url(#fade-mask)"
                 className="origin-center animate-spin-slow"
               />
             </svg>
           </div>
 
-          {/* Gradient Circle Background */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 lg:w-64 sm:w-56 w-10/12 aspect-square bg-gradient-to-br from-[#0077C0] to-[#C7EEFF] rounded-full z-[-1]"></div>
+          {/* <!-- Gradient Circle Background --> */}
+          <div
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 lg:w-64 sm:w-56 w-10/12 aspect-square bg-gradient-to-br from-[#0077C0] to-[#C7EEFF] rounded-full z-[-1]"
+          ></div>
 
-          {/* Image */}
+          {/* <!-- Image --> */}
           <img
             src={profileImage}
             alt="Iza"

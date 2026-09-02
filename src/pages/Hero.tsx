@@ -54,7 +54,7 @@ export default function Hero(){
 
                 {/* ===== Paragraf — fade in dari bawah, halus ===== */}
                 <p
-                    className="hero-anim-desc text-sm lg:min-w-xl sm:text-base sm:max-w-md sm:font-light font-extralight"
+                    className="hero-anim-desc text-sm sm:min-w-lg lg:min-w-2xl sm:text-base sm:max-w-md sm:font-light font-extralight"
                 >
                     I am Alfriza, a{" "}
                     <span className="italic font-medium">Full-Stack Web Developer</span>{" "}
