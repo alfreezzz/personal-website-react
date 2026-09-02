@@ -26,7 +26,7 @@ export default function NotFound({ onBack }: NotFoundProps) {
                     className="h-full w-full bg-transparent"
                 />
             </div>
-            <div className="relative z-10 flex flex-col items-center justify-center w-full mx-2 sm:mx-5 xl:mx-32 text-center">
+            <div className="relative z-10 flex flex-col items-center justify-center w-full mx-2 sm:mx-5 xl:mx-32 text-center animate-[notFoundIn_0.8s_ease-out_both]">
                 <FuzzyText 
                     fontSize="8vw"
                     baseIntensity={0.2}

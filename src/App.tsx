@@ -39,9 +39,9 @@ function App() {
           element={
             <>
               <Hero />
-              <div className="flex justify-center">
+              <div className="flex justify-center min-h-screen items-center">
                 <ScrollFloat
-                  textClassName="text-4xl sm:text-5xl lg:text-8xl my-64 font-pixelmono text-[#C7EEFF] text-center"
+                  textClassName="font-pixelmono text-[#C7EEFF] text-center"
                   animationDuration={1}
                   ease='back.inOut(2)'
                   scrollStart='top bottom'
