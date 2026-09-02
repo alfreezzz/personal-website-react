@@ -1,4 +1,4 @@
-import { useState, type MouseEvent, type ReactNode } from "react";
+import { useState, useEffect, type MouseEvent, type ReactNode } from "react";
 import { projects, type Project } from "../data/projects";
 import { techStackRegistry } from "../data/techStack";
 import WarpText from "../components/WarpText";
@@ -8,6 +8,50 @@ interface ProjectProps {
 }
 
 type CardVariant = "desktop" | "mobile";
+
+// Membungkus children dan memicu class animasi masuk saat elemen terlihat di viewport.
+// Observer per-instance sehingga tiap kartu punya trigger scroll sendiri-sendiri.
+function RevealOnScroll({
+  children,
+  animation,
+  delay = 0,
+  threshold = 0.15,
+  className = "",
+}: {
+  children: ReactNode;
+  animation: string;
+  delay?: number;
+  threshold?: number;
+  className?: string;
+}) {
+  const [node, setNode] = useState<HTMLDivElement | null>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    if (!node || inView) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [node, threshold, inView]);
+
+  return (
+    <div
+      ref={setNode}
+      className={`${className} ${inView ? animation : "opacity-0"}`}
+      style={inView ? { animationDelay: `${delay}s` } : undefined}
+    >
+      {children}
+    </div>
+  );
+}
 
 export default function Project({ onMissingProjectUrl }: ProjectProps) {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
@@ -62,7 +106,7 @@ export default function Project({ onMissingProjectUrl }: ProjectProps) {
               alt={project.title}
               className="object-cover w-full h-auto transition duration-500 ease-out hover:scale-105"
             />
-            <div className="absolute inset-0 transition duration-500 pointer-events-none bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100" />
+            <div className="absolute inset-0 transition duration-500 pointer-events-none bg-linear-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100" />
           </div>
         </a>
         <div
@@ -206,25 +250,34 @@ export default function Project({ onMissingProjectUrl }: ProjectProps) {
           />
         </div>
 
-        <h2 className="relative z-10 mb-3 text-xs italic tracking-wider text-center font-extralight lg:text-base mobile-m:text-sm max-lg:-mt-3">
-          Some collection of the{" "}
-          <span className="font-semibold">projects</span> I've{" "}
-          <span className="font-semibold">made</span>.
-        </h2>
+        <RevealOnScroll animation="proj-anim-fadeup" threshold={0.3}>
+          <h2 className="relative z-10 mb-3 text-xs italic tracking-wider text-center font-extralight lg:text-base mobile-m:text-sm max-lg:-mt-3">
+            Some collection of the{" "}
+            <span className="font-semibold">projects</span> I've{" "}
+            <span className="font-semibold">made</span>.
+          </h2>
+        </RevealOnScroll>
 
-        <div className="relative z-10 w-24 h-px mx-auto bg-gradient-to-r from-transparent via-[#0077C0] to-transparent" />
+        <RevealOnScroll animation="proj-anim-line" delay={0.15} threshold={0.3}>
+          <div className="relative z-10 w-24 h-px mx-auto bg-linear-to-r from-transparent via-[#0077C0] to-transparent" />
+        </RevealOnScroll>
 
         {/* Desktop / large screens: vertical layout, alternating image/text sides */}
         <div className="relative z-10 hidden lg:flex flex-col gap-24 mx-auto mt-12">
           {projects.map((project, index) => (
-            <div key={project.title} className="group">
+            <RevealOnScroll
+              key={project.title}
+              className="group"
+              animation={index % 2 === 1 ? "proj-anim-slide-left" : "proj-anim-slide-right"}
+              threshold={0.15}
+            >
               {renderCard(project, index % 2 === 1, "desktop")}
-            </div>
+            </RevealOnScroll>
           ))}
         </div>
 
         {/* Mobile / tablet: horizontal snap slider, every card the same height */}
-        <div className="relative z-10 lg:hidden mt-10 -mx-3 sm:-mx-5">
+        <RevealOnScroll animation="proj-anim-fadeup" threshold={0.1} className="relative z-10 lg:hidden mt-10 -mx-3 sm:-mx-5">
           <div className="flex items-stretch gap-6 overflow-x-auto snap-x snap-mandatory pb-4 px-3 sm:px-5 scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
             {projects.map((project) => (
               <div
@@ -244,8 +297,70 @@ export default function Project({ onMissingProjectUrl }: ProjectProps) {
               />
             ))}
           </div>
-        </div>
+        </RevealOnScroll>
       </div>
+
+      <style>{`
+        @keyframes projFadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes projLineGrow {
+            0% {
+                opacity: 0;
+                transform: scaleX(0);
+            }
+            100% {
+                opacity: 1;
+                transform: scaleX(1);
+            }
+        }
+
+        @keyframes projSlideLeft {
+            0% {
+                opacity: 0;
+                transform: translateX(-40px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes projSlideRight {
+            0% {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .proj-anim-fadeup {
+            animation: projFadeUp 0.6s ease-out forwards;
+        }
+
+        .proj-anim-line {
+            animation: projLineGrow 0.5s ease-out forwards;
+        }
+
+        .proj-anim-slide-left {
+            animation: projSlideLeft 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .proj-anim-slide-right {
+            animation: projSlideRight 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+      `}</style>
     </div>
   );
 }

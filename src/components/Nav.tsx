@@ -34,20 +34,24 @@ export default function Nav() {
   return (
     <>
       <nav className="fixed top-3 sm:top-5 left-0 z-50 flex justify-center w-full px-3 sm:px-5 xl:px-32 pointer-events-none">
-        <div className="pointer-events-auto flex items-center justify-between w-full max-w-5xl gap-3 bg-black/60 backdrop-blur-md border border-white/10 rounded-full pl-5 pr-2 py-2 sm:pr-3 shadow-[0_0px_4px_rgb(0,119,192)]">
+        <div className="nav-anim-bar pointer-events-auto flex items-center justify-between w-full max-w-5xl gap-3 bg-black/60 backdrop-blur-md border border-white/10 rounded-full pl-5 pr-2 py-2 sm:pr-3 shadow-[0_0px_4px_rgb(0,119,192)]">
           {/* Logo */}
           <button
             type="button"
             onClick={() => navigate("/#about")}
-            className="text-base sm:text-lg font-pixelmono drop-shadow-[0_0px_4px_rgb(0,119,192)] whitespace-nowrap"
+            className="nav-anim-logo text-base sm:text-lg font-pixelmono drop-shadow-[0_0px_4px_rgb(0,119,192)] whitespace-nowrap"
           >
             Alfreezzz_
           </button>
 
           {/* Desktop Navigation */}
           <ul className="hidden sm:flex sm:items-center sm:space-x-7 text-sm font-light tracking-wide pr-4">
-            {navLinks.map((link) => (
-              <li key={link.href}>
+            {navLinks.map((link, i) => (
+              <li
+                key={link.href}
+                className="nav-anim-link"
+                style={{ animationDelay: `${0.45 + i * 0.08}s` }}
+              >
                 <button
                   type="button"
                   onClick={() => handleNavigate(link.href)}
@@ -63,13 +67,13 @@ export default function Nav() {
           {/* Mobile Hamburger */}
           <button
             onClick={() => setOpen(!open)}
-            className="sm:hidden relative z-50 flex items-center justify-center w-10 h-10 rounded-full transition-colors focus:outline-none hover:bg-white/10"
+            className="nav-anim-logo sm:hidden relative z-50 flex items-center justify-center w-10 h-10 rounded-full transition-colors focus:outline-none hover:bg-white/10"
             aria-label="Toggle navigation menu"
           >
             <div className="relative w-5 h-4 flex flex-col justify-between">
               <span
                 className={`block h-0.5 w-full bg-[#C7EEFF] rounded-full transition-all duration-300 origin-center ${
-                  open ? "rotate-45 translate-y-[7px]" : ""
+                  open ? "rotate-45 translate-y-1.75" : ""
                 }`}
               ></span>
               <span
@@ -79,7 +83,7 @@ export default function Nav() {
               ></span>
               <span
                 className={`block h-0.5 w-full bg-[#C7EEFF] rounded-full transition-all duration-300 origin-center ${
-                  open ? "-rotate-45 -translate-y-[7px]" : ""
+                  open ? "-rotate-45 -translate-y-1.75" : ""
                 }`}
               ></span>
             </div>
@@ -97,7 +101,7 @@ export default function Nav() {
 
       {/* Mobile Navigation Panel */}
       <div
-        className={`fixed top-[4.5rem] left-3 right-3 z-50 sm:hidden transition-all duration-300 ease-out ${
+        className={`fixed top-18 left-3 right-3 z-50 sm:hidden transition-all duration-300 ease-out ${
           open
             ? "opacity-100 translate-y-0 pointer-events-auto"
             : "opacity-0 -translate-y-4 pointer-events-none"
@@ -127,6 +131,58 @@ export default function Nav() {
           ))}
         </div>
       </div>
+
+      <style>{`
+        @keyframes navSlideDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.97);
+            }
+            60% {
+                opacity: 1;
+                transform: translateY(4px) scale(1.005);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes navFadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes navLinkDrop {
+            0% {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .nav-anim-bar {
+            opacity: 0;
+            animation: navSlideDown 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+        }
+
+        .nav-anim-logo {
+            opacity: 0;
+            animation: navFadeIn 0.5s ease-out 0.4s forwards;
+        }
+
+        .nav-anim-link {
+            opacity: 0;
+            animation: navLinkDrop 0.5s ease-out forwards;
+        }
+      `}</style>
     </>
   );
 }

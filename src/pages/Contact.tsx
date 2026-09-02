@@ -1,4 +1,4 @@
-import { useState, useRef, type ChangeEvent, type FocusEvent, type FormEvent } from "react";
+import { useState, useEffect, useRef, type ChangeEvent, type FocusEvent, type FormEvent, type ReactNode } from "react";
 import VariableProximity from "../components/VariableProximity";
 
 interface ContactForm {
@@ -25,6 +25,50 @@ interface SocialLink {
   description: string;
   ctaLabel: string;
   icon: React.ReactNode;
+}
+
+// Membungkus children dan memicu class animasi masuk saat elemen terlihat di viewport.
+// TODO: bisa diekstrak ke components/RevealOnScroll.tsx agar tidak duplikat dengan Project.tsx
+function RevealOnScroll({
+  children,
+  animation,
+  delay = 0,
+  threshold = 0.15,
+  className = "",
+}: {
+  children: ReactNode;
+  animation: string;
+  delay?: number;
+  threshold?: number;
+  className?: string;
+}) {
+  const [node, setNode] = useState<HTMLDivElement | null>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    if (!node || inView) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [node, threshold, inView]);
+
+  return (
+    <div
+      ref={setNode}
+      className={`${className} ${inView ? animation : "opacity-0"}`}
+      style={inView ? { animationDelay: `${delay}s` } : undefined}
+    >
+      {children}
+    </div>
+  );
 }
 
 export default function Contact() {
@@ -171,38 +215,49 @@ export default function Contact() {
       id="contact"
       className="px-3 xl:px-32 lg:px-5 sm:px-5 mb-24 lg:mb-32 overflow-x-hidden"
     >
-      <div
-        ref={containerRef}
-        style={{ position: "relative" }}
-        className="flex items-center justify-center w-full"
-      >
-        <VariableProximity
-          label={"Contact Me!"}
-          className="text-center lg:text-7xl sm:text-6xl mobile-m:text-5xl text-4xl lg:py-3 pb-5 sm:pb-4 bg-gradient-to-b from-[#0077C0] via-[#0077C0] to-[#C7EEFF] bg-clip-text text-transparent"
-          fromFontVariationSettings="'wght' 300, 'opsz' 9"
-          toFontVariationSettings="'wght' 1000, 'opsz' 40"
-          containerRef={containerRef}
-          radius={700}
-          falloff="linear"
-        />
-      </div>
-      <h2 className="mb-3 text-xs italic tracking-wider text-center font-extralight lg:text-base mobile-m:text-sm max-lg:-mt-3">
-        Feel free to <span className="font-semibold">reach out</span> and{" "}
-        <span className="font-semibold">get in touch</span>.
-      </h2>
+      <RevealOnScroll animation="ct-anim-fadeup" threshold={0.3}>
+        <div
+          ref={containerRef}
+          style={{ position: "relative" }}
+          className="flex items-center justify-center w-full"
+        >
+          <VariableProximity
+            label={"Contact Me!"}
+            className="text-center lg:text-7xl sm:text-6xl mobile-m:text-5xl text-4xl lg:py-3 pb-5 sm:pb-4 bg-linear-to-b from-[#0077C0] via-[#0077C0] to-[#C7EEFF] bg-clip-text text-transparent"
+            fromFontVariationSettings="'wght' 300, 'opsz' 9"
+            toFontVariationSettings="'wght' 1000, 'opsz' 40"
+            containerRef={containerRef}
+            radius={700}
+            falloff="linear"
+          />
+        </div>
+      </RevealOnScroll>
 
-      <div className="w-24 h-px mx-auto bg-gradient-to-r from-transparent via-[#0077C0] to-transparent" />
+      <RevealOnScroll animation="ct-anim-fadeup" delay={0.1} threshold={0.3}>
+        <h2 className="mb-3 text-xs italic tracking-wider text-center font-extralight lg:text-base mobile-m:text-sm max-lg:-mt-3">
+          Feel free to <span className="font-semibold">reach out</span> and{" "}
+          <span className="font-semibold">get in touch</span>.
+        </h2>
+      </RevealOnScroll>
+
+      <RevealOnScroll animation="ct-anim-line" delay={0.2} threshold={0.3}>
+        <div className="w-24 h-px mx-auto bg-linear-to-r from-transparent via-[#0077C0] to-transparent" />
+      </RevealOnScroll>
 
       <div className="flex flex-col items-stretch w-full max-w-full gap-10 mt-12 min-w-0 lg:flex-row lg:gap-16 lg:mt-16">
         {/* Contact form styled as a tablet / handheld device */}
-        <div className="relative w-full min-w-0 max-w-sm mx-auto lg:w-1/2 lg:max-w-none overflow-hidden">
+        <RevealOnScroll
+          animation="ct-anim-slide-left"
+          threshold={0.15}
+          className="relative w-full min-w-0 max-w-sm mx-auto lg:w-1/2 lg:max-w-none overflow-hidden"
+        >
           <div className="pointer-events-none absolute inset-0 -z-10 rounded-[3rem] bg-[#0077C0]/10 blur-3xl" />
 
           <div className="relative rounded-[2.5rem] bg-neutral-900 p-3 sm:p-4 ring-1 ring-white/10 shadow-2xl shadow-black/60 max-w-full overflow-hidden">
             {/* decorative side buttons */}
-            <span className="absolute -left-[3px] top-24 h-8 w-[3px] rounded-full bg-white/10" />
-            <span className="absolute -left-[3px] top-36 h-12 w-[3px] rounded-full bg-white/10" />
-            <span className="absolute -right-[3px] top-28 h-14 w-[3px] rounded-full bg-white/10" />
+            <span className="absolute -left-0.75 top-24 h-8 w-0.75 rounded-full bg-white/10" />
+            <span className="absolute -left-0.75 top-36 h-12 w-0.75 rounded-full bg-white/10" />
+            <span className="absolute -right-0.75 top-28 h-14 w-0.75 rounded-full bg-white/10" />
 
             <div className="rounded-[1.75rem] bg-black px-5 py-7 sm:px-8 sm:py-8 ring-1 ring-white/5">
               {/* notch */}
@@ -276,7 +331,7 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={!isFormValid || status === "sending"}
-                  className={`relative inline-flex h-12 active:scale-95 transition overflow-hidden rounded-lg p-[1px] focus:outline-none ${
+                  className={`relative inline-flex h-12 active:scale-95 transition overflow-hidden rounded-lg p-px focus:outline-none ${
                     !isFormValid || status === "sending"
                       ? "opacity-50 cursor-not-allowed"
                       : ""
@@ -333,47 +388,115 @@ export default function Contact() {
               <div className="mx-auto mt-8 h-1 w-24 rounded-full bg-white/20" />
             </div>
           </div>
-        </div>
+        </RevealOnScroll>
 
         {/* Social links as individual cards */}
         <div className="flex flex-col w-full min-w-0 max-w-full gap-4 lg:w-1/2">
-          {socialLinks.map((social) => (
-            <div
+          {socialLinks.map((social, i) => (
+            <RevealOnScroll
               key={social.key}
-              className="flex min-w-0 gap-4 p-5 transition duration-300 border group rounded-2xl border-white/10 bg-white/[0.03] hover:-translate-y-1 hover:border-[#C7EEFF]/40 hover:bg-white/[0.06] hover:shadow-lg hover:shadow-black/30"
+              animation="ct-anim-slide-right"
+              delay={i * 0.12}
+              threshold={0.2}
             >
-              <a
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center w-12 h-12 p-2 border shrink-0 rounded-xl border-white/10 bg-white/5"
-                aria-label={social.label}
+              <div
+                className="flex min-w-0 gap-4 p-5 transition duration-300 border group rounded-2xl border-white/10 bg-white/3 hover:-translate-y-1 hover:border-[#C7EEFF]/40 hover:bg-white/6 hover:shadow-lg hover:shadow-black/30"
               >
-                {social.icon}
-              </a>
-              <div className="min-w-0 leading-normal">
-                <h3 className="text-base font-bold tracking-wide lg:text-2xl sm:text-xl">
-                  {social.title}
-                </h3>
-                <p className="text-sm tracking-wide font-extralight text-gray-400 sm:text-base max-sm:my-1">
-                  {social.description}
-                </p>
                 <a
                   href={social.href}
-                  className="inline-flex items-center justify-start max-w-full font-medium tracking-wider transition group/link"
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="flex items-center justify-center w-12 h-12 p-2 border shrink-0 rounded-xl border-white/10 bg-white/5"
+                  aria-label={social.label}
                 >
-                  <span className="text-sm sm:text-base text-[#C7EEFF] group-hover/link:underline break-words">
-                    {social.ctaLabel}
-                  </span>
-                  {arrowIcon}
+                  {social.icon}
                 </a>
+                <div className="min-w-0 leading-normal">
+                  <h3 className="text-base font-bold tracking-wide lg:text-2xl sm:text-xl">
+                    {social.title}
+                  </h3>
+                  <p className="text-sm tracking-wide font-extralight text-gray-400 sm:text-base max-sm:my-1">
+                    {social.description}
+                  </p>
+                  <a
+                    href={social.href}
+                    className="inline-flex items-center justify-start max-w-full font-medium tracking-wider transition group/link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span className="text-sm sm:text-base text-[#C7EEFF] group-hover/link:underline wrap-break-word">
+                      {social.ctaLabel}
+                    </span>
+                    {arrowIcon}
+                  </a>
+                </div>
               </div>
-            </div>
+            </RevealOnScroll>
           ))}
         </div>
       </div>
+
+      <style>{`
+        @keyframes ctFadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes ctLineGrow {
+            0% {
+                opacity: 0;
+                transform: scaleX(0);
+            }
+            100% {
+                opacity: 1;
+                transform: scaleX(1);
+            }
+        }
+
+        @keyframes ctSlideLeft {
+            0% {
+                opacity: 0;
+                transform: translateX(-40px) scale(0.97);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        @keyframes ctSlideRight {
+            0% {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .ct-anim-fadeup {
+            animation: ctFadeUp 0.6s ease-out forwards;
+        }
+
+        .ct-anim-line {
+            animation: ctLineGrow 0.5s ease-out forwards;
+        }
+
+        .ct-anim-slide-left {
+            animation: ctSlideLeft 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .ct-anim-slide-right {
+            animation: ctSlideRight 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+      `}</style>
     </div>
   );
 }

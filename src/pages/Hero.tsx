@@ -25,10 +25,10 @@ export default function Hero(){
 
                 {/* ===== Name Box — slide in dari kiri + sedikit overshoot ===== */}
                 <div className="hero-anim-name relative inline-block mb-3 select-none">
-                    <div className="absolute inset-0 translate-x-[5px] translate-y-[5px] bg-black" />
-                    <div className="relative bg-[#001824] p-[3px] rounded-2xl">
-                        <div className="relative rounded-xl bg-gradient-to-b from-[#3FC1FF] via-[#0077C0] to-[#00588F] px-4 py-1 flex items-center gap-2 overflow-hidden">
-                            <div className="absolute top-0 left-0 right-0 h-[2px] bg-white/40" />
+                    <div className="absolute inset-0 translate-x-1.25 translate-y-1.25 bg-black" />
+                    <div className="relative bg-[#001824] p-0.75 rounded-2xl">
+                        <div className="relative rounded-xl bg-linear-to-b from-[#3FC1FF] via-[#0077C0] to-[#00588F] px-4 py-1 flex items-center gap-2 overflow-hidden">
+                            <div className="absolute top-0 left-0 right-0 h-0.5 bg-white/40" />
                             <div className="absolute inset-0 opacity-10 bg-[repeating-linear-gradient(135deg,#fff_0px,#fff_1px,transparent_1px,transparent_6px)]" />
                             <h3 className="relative text-black font-pixelmono lg:text-2xl text-base sm:text-lg uppercase tracking-wide">
                                 Alfriza Akhmad Rahadi
@@ -71,18 +71,18 @@ export default function Hero(){
                             style={{ animationDelay: `${0.9 + i * 0.15}s` }}
                             className="hero-anim-btn group relative inline-block select-none"
                         >
-                            <span className="absolute inset-0 translate-x-[4px] translate-y-[4px] bg-[#C7EEFF]/70 rounded-lg transition-transform duration-150 group-hover:translate-x-[1px] group-hover:translate-y-[1px] group-active:translate-x-0 group-active:translate-y-0" />
+                            <span className="absolute inset-0 translate-x-1 translate-y-1 bg-[#C7EEFF]/70 rounded-lg transition-transform duration-150 group-hover:translate-x-px group-hover:translate-y-px group-active:translate-x-0 group-active:translate-y-0" />
 
                             <span
-                                className="relative flex items-center justify-center gap-1.5 rounded-lg border-2 border-[#C7EEFF] bg-black sm:px-5 px-4 py-1.5 overflow-hidden transition-transform duration-150 group-hover:-translate-x-[1px] group-hover:-translate-y-[1px] group-active:translate-x-[3px] group-active:translate-y-[3px]"
+                                className="relative flex items-center justify-center gap-1.5 rounded-lg border-2 border-[#C7EEFF] bg-black sm:px-5 px-4 py-1.5 overflow-hidden transition-transform duration-150 group-hover:-translate-x-px group-hover:-translate-y-px group-active:translate-x-0.75 group-active:translate-y-0.75"
                             >
-                                <span className="pointer-events-none absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-500 ease-out bg-gradient-to-r from-transparent via-[#C7EEFF]/25 to-transparent" />
+                                <span className="pointer-events-none absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-500 ease-out bg-linear-to-r from-transparent via-[#C7EEFF]/25 to-transparent" />
 
                                 <span className="relative sm:text-base text-sm font-semibold text-[#C7EEFF] group-hover:text-white transition-colors">
                                     {btn.label}
                                 </span>
                                 <svg
-                                    className="relative w-4 h-4 lg:w-5 lg:h-5 text-[#C7EEFF] group-hover:text-white group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform transition-colors"
+                                    className="relative w-4 h-4 lg:w-5 lg:h-5 text-[#C7EEFF] group-hover:text-white group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform"
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 -960 960 960"
                                     fill="currentColor"

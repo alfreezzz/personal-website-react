@@ -37,6 +37,28 @@ function useScrollProgress(node: HTMLElement | null) {
   return progress;
 }
 
+// Trigger sekali saat section masuk viewport — dipakai untuk animasi masuk (entrance)
+function useInView(node: HTMLElement | null, threshold = 0.15) {
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    if (!node || inView) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [node, threshold, inView]);
+
+  return inView;
+}
+
 export default function Experience() {
   const [tab, setTab] = useState<Tab>("experience");
 
@@ -44,6 +66,9 @@ export default function Experience() {
   const [certNode, setCertNode] = useState<HTMLDivElement | null>(null);
   const expProgress = useScrollProgress(expNode);
   const certProgress = useScrollProgress(certNode);
+
+  const [sectionNode, setSectionNode] = useState<HTMLDivElement | null>(null);
+  const inView = useInView(sectionNode);
 
   useEffect(() => {
     const id = requestAnimationFrame(() => {
@@ -78,18 +103,26 @@ export default function Experience() {
     }`;
 
   return (
-    <div id="experience" className="relative xl:mx-32 lg:mx-10 mx-4 overflow-x-hidden rounded-2xl sm:rounded-3xl">
+    <div
+      id="experience"
+      ref={setSectionNode}
+      className="relative xl:mx-32 lg:mx-10 mx-4 overflow-hidden rounded-2xl sm:rounded-3xl"
+    >
       {/* Ambient glow di belakang section */}
       <div
         className="pointer-events-none absolute inset-x-0 -top-12 h-40 sm:h-48 bg-[#0077C0]/10 blur-3xl"
         aria-hidden="true"
       />
 
-      <div className="relative rounded-2xl sm:rounded-3xl border border-[#0077C0]/30 bg-gradient-to-b from-[#0b1420]/40 to-[#0b1420]/30 backdrop-blur-sm shadow-[0_0_70px_-20px_rgba(0,119,192,0.4)] lg:px-10 sm:px-6 px-4 pt-8 sm:pt-10 pb-6 sm:pb-8 overflow-hidden">
+      <div
+        className={`relative rounded-2xl sm:rounded-3xl border border-[#0077C0]/30 bg-linear-to-b from-[#0b1420]/40 to-[#0b1420]/30 backdrop-blur-sm shadow-[0_0_70px_-20px_rgba(0,119,192,0.4)] lg:px-10 sm:px-6 px-4 pt-8 sm:pt-10 pb-6 sm:pb-8 overflow-hidden ${
+          inView ? "exp-anim-panel" : "opacity-0"
+        }`}
+      >
 
         {/* HEADER */}
-        <div className="flex flex-col items-center mb-8 sm:mb-10">
-          <h1 className="text-center lg:text-4xl sm:text-3xl text-xl font-bold tracking-wide bg-gradient-to-b from-white via-[#C7EEFF] to-[#0077C0] bg-clip-text text-transparent px-2">
+        <div className={`flex flex-col items-center mb-8 sm:mb-10 ${inView ? "exp-anim-header" : "opacity-0"}`}>
+          <h1 className="text-center lg:text-4xl sm:text-3xl text-xl font-bold tracking-wide bg-linear-to-b from-white via-[#C7EEFF] to-[#0077C0] bg-clip-text text-transparent px-2">
             Experience &amp; Certificate
           </h1>
 
@@ -122,7 +155,11 @@ export default function Experience() {
         </div>
 
         {/* WRAPPER STACK — menyediakan ruang cadangan di kanan-bawah untuk "intip" kartu belakang */}
-        <div className="relative pr-3 pb-4 sm:pr-4 sm:pb-5 lg:pr-5 lg:pb-6 rounded-2xl">
+        <div
+          className={`relative pr-3 pb-4 sm:pr-4 sm:pb-5 lg:pr-5 lg:pb-6 rounded-2xl ${
+            inView ? "exp-anim-stack" : "opacity-0"
+          }`}
+        >
           <div className="grid">
             {/* EXPERIENCE CARD */}
             <div style={cardStyle("experience")} className={cardClass("experience")}>
@@ -144,10 +181,14 @@ export default function Experience() {
                 />
 
                 <div className="mt-8 space-y-10 sm:space-y-12 timeline-content">
-                  {experience.map((item) => (
-                    <div key={`${item.company}-${item.position}`} className="relative flex">
+                  {experience.map((item, i) => (
+                    <div
+                      key={`${item.company}-${item.position}`}
+                      className={`relative flex ${inView ? "exp-anim-item" : "opacity-0"}`}
+                      style={{ animationDelay: inView ? `${0.5 + i * 0.12}s` : undefined }}
+                    >
                       <div className="flex">
-                        <div className="max-sm:hidden font-light tracking-widest lg:w-36 w-[6.5rem] lg:text-base text-sm text-[#C7EEFF]/70">
+                        <div className="max-sm:hidden font-light tracking-widest lg:w-36 w-26 lg:text-base text-sm text-[#C7EEFF]/70">
                           {item.startDate} - <span className="text-right">{item.endDate ?? "Present"}</span>
                         </div>
                       </div>
@@ -190,10 +231,14 @@ export default function Experience() {
                 />
 
                 <div className="mt-8 space-y-10 sm:space-y-12 timeline-content">
-                  {certificate.map((item) => (
-                    <div key={`${item.name}-${item.issuer}`} className="relative flex">
+                  {certificate.map((item, i) => (
+                    <div
+                      key={`${item.name}-${item.issuer}`}
+                      className={`relative flex ${inView ? "exp-anim-item" : "opacity-0"}`}
+                      style={{ animationDelay: inView ? `${0.5 + i * 0.12}s` : undefined }}
+                    >
                       <div className="flex">
-                        <div className="max-sm:hidden font-light tracking-widest lg:w-36 w-[6.5rem] lg:text-base text-sm text-[#C7EEFF]/70">
+                        <div className="max-sm:hidden font-light tracking-widest lg:w-36 w-26 lg:text-base text-sm text-[#C7EEFF]/70">
                           {item.startDate} {item.endDate ? `- ${item.endDate}` : ""}
                         </div>
                       </div>
@@ -221,7 +266,7 @@ export default function Experience() {
                           href={item.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex group drop-shadow-[0_1px_3px_rgb(199,238,255)] hover:brightness-150 font-semibold bg-black border-1 border-[#C7EEFF] items-center justify-center rounded-full sm:px-4 px-3 sm:py-1.5 py-1 transition"
+                          className="inline-flex group drop-shadow-[0_1px_3px_rgb(199,238,255)] hover:brightness-150 font-semibold bg-black border border-[#C7EEFF] items-center justify-center rounded-full sm:px-4 px-3 sm:py-1.5 py-1 transition"
                         >
                           <span className="sm:text-xs text-[11px] text-[#C7EEFF]">Show Credential</span>
                           <svg
@@ -243,6 +288,70 @@ export default function Experience() {
           </div>
         </div>
       </div>
+
+      <style>{`
+        @keyframes expPanelFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes expHeaderFadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(-14px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes expStackScaleIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.96);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes expItemSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateX(-16px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .exp-anim-panel {
+            animation: expPanelFadeIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .exp-anim-header {
+            animation: expHeaderFadeUp 0.6s ease-out 0.15s forwards;
+            opacity: 0;
+        }
+
+        .exp-anim-stack {
+            animation: expStackScaleIn 0.6s ease-out 0.3s forwards;
+            opacity: 0;
+        }
+
+        .exp-anim-item {
+            animation: expItemSlideIn 0.5s ease-out forwards;
+        }
+      `}</style>
     </div>
   );
 }

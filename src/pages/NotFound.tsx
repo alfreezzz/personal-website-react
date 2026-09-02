@@ -51,7 +51,7 @@ export default function NotFound({ onBack }: NotFoundProps) {
                     <span className="absolute inset-0 -z-20 rounded-full bg-[#C7EEFF] blur-xl opacity-0 scale-90 transition-all duration-300 group-hover:opacity-40 group-hover:scale-110" />
 
                     {/* gradient sheen halus yang bergerak */}
-                    <span className="pointer-events-none absolute inset-0 -z-10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[linear-gradient(115deg,transparent_20%,rgba(199,238,255,0.35)_50%,transparent_80%)] bg-[length:200%_100%] bg-[position:100%_0] group-hover:bg-[position:0%_0] transition-[background-position]" />
+                    <span className="pointer-events-none absolute inset-0 -z-10 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[linear-gradient(115deg,transparent_20%,rgba(199,238,255,0.35)_50%,transparent_80%)] bg-size-[200%_100%] bg-position-[100%_0] group-hover:bg-position-[0%_0]" />
 
                     <svg
                         className="relative w-4 h-4 lg:w-5 lg:h-5 text-[#C7EEFF] group-hover:-translate-x-1 transition-transform duration-300"
