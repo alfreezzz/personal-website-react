@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom"
 import Footer from "./components/Footer"
 import Nav from "./components/Nav"
@@ -29,8 +29,10 @@ function App() {
     navigate("/#project")
   }
 
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
   return (
-    <div className="bg-black text-[#C7EEFF] min-h-screen">
+    <div ref={scrollContainerRef} className="bg-black text-[#C7EEFF] scrollbar-thumb-[#0077c0] h-screen overflow-y-scroll">
       <Nav />
 
       <Routes>
@@ -41,6 +43,7 @@ function App() {
               <Hero />
               <div className="flex justify-center min-h-screen items-center">
                 <ScrollFloat
+                  scrollContainerRef={scrollContainerRef}
                   textClassName="font-pixelmono text-[#C7EEFF] text-center"
                   animationDuration={1}
                   ease='back.inOut(2)'

@@ -184,7 +184,7 @@ export default function About() {
               >
                 Universitas Pendidikan Indonesia
               </a>{" "}
-              with a <span className="font-medium">Computer Science</span> Major.
+              with a <span className="font-medium bg-linear-to-r from-[#0077C0] to-[#003a60] px-0.5 rounded-sm">Computer Science</span> Major.
             </p>
             <br />
             <p>
