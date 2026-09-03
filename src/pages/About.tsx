@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import profileImage from "../assets/images/Iza.webp";
 import cvFile from "../assets/files/CV_Alfriza Akhmad Rahadi.pdf";
 import { skills } from "../data/skills";
@@ -12,6 +12,8 @@ interface GithubUser {
 export default function About() {
   const [repos, setRepos] = useState<number>(0);
   const [fileSize, setFileSize] = useState<string>("Loading...");
+  const [visible, setVisible] = useState<boolean>(false);
+  const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch("https://api.github.com/users/alfreezzz")
@@ -40,74 +42,102 @@ export default function About() {
     getFileSize();
   }, []);
 
+  useEffect(() => {
+    const PROXIMITY = 160;
+
+    const handleMove = (e: MouseEvent) => {
+      document.querySelectorAll<HTMLElement>('.glow-border').forEach((card) => {
+        const rect = card.getBoundingClientRect();
+        const nearestX = Math.max(rect.left, Math.min(e.clientX, rect.right));
+        const nearestY = Math.max(rect.top, Math.min(e.clientY, rect.bottom));
+        const dist = Math.hypot(e.clientX - nearestX, e.clientY - nearestY);
+        const intensity = Math.max(0, 1 - dist / PROXIMITY);
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        card.style.setProperty('--x', `${x}px`);
+        card.style.setProperty('--y', `${y}px`);
+        card.style.setProperty('--intensity', `${intensity}`);
+      });
+    };
+
+    document.addEventListener('mousemove', handleMove);
+    return () => document.removeEventListener('mousemove', handleMove);
+  }, []);
+
+  // Trigger entrance animation saat section About masuk ke viewport
+  useEffect(() => {
+    const node = sectionRef.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect(); // animasi hanya main sekali
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div id="about" className="px-3 xl:px-32 sm:px-5">
-        <div className="flex justify-center">
-            <DepthText
-                text="Me!"
-                layers={34}
-                depth={2.4}
-                faceColor="#f8fafc"
-                depthColor="#7c3aed"
-                tilt={7.5}
-                pointerTracking
-                smoothing={0.14}
-                perspective={900}
-                autoOrbit
-                orbitSpeed={0.35}
-                fontWeight={900}
-                className="text-center lg:text-6xl sm:text-4xl text-6xl font-bold tracking-wide mb-0 sm:mb-4 lg:mb-0"
-                shadow
-            />
+    <div id="about" ref={sectionRef} className="px-3 xl:px-32 sm:px-5">
+      <div className="flex justify-center">
+        <div className={visible ? "about-anim-title" : "opacity-0"}>
+          <DepthText
+            text="Me!"
+            layers={34}
+            depth={2.4}
+            faceColor="#f8fafc"
+            depthColor="#7c3aed"
+            tilt={7.5}
+            pointerTracking
+            smoothing={0.14}
+            perspective={900}
+            autoOrbit
+            orbitSpeed={0.35}
+            fontWeight={900}
+            className="text-center lg:text-6xl sm:text-4xl text-6xl font-bold tracking-wide -mb-4 sm:mb-4 lg:mb-0"
+            shadow
+          />
         </div>
+      </div>
+
       <div className="relative flex flex-col items-center px-3 about sm:flex-row lg:gap-0 sm:gap-12 lg:px-8 sm:px-5">
         {/* Image Container with Centered Circle */}
-        <div className="relative z-0 w-full py-8 sm:w-2/5">
-          {/* <!-- Animated Rotating Line Container --> */}
-          <div
-            className="absolute w-10/12 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 lg:w-64 sm:w-56 aspect-square"
-          >
-            {/* <!-- Rotating SVG Line --> */}
+        <div
+          className={`relative z-0 w-full py-8 sm:w-2/5 ${visible ? "about-anim-image" : "opacity-0"}`}
+        >
+          <div className="absolute w-10/12 -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 lg:w-64 sm:w-56 aspect-square">
             <svg
               viewBox="0 0 220 220"
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%+40px)] h-[calc(100%+40px)] z-[-2]"
             >
               <defs>
-                {/* <!-- Gradient Definition --> */}
-                <linearGradient
-                  id="gradientLine"
-                  x1="0%"
-                  y1="0%"
-                  x2="100%"
-                  y2="100%"
-                >
-                  <stop
-                    offset="0%"
-                    style={{ stopColor: "#0077c0", stopOpacity: 1 }}
-                  />
-                  <stop
-                    offset="100%"
-                    style={{ stopColor: "#c7eeff", stopOpacity: 0 }}
-                  />
+                <linearGradient id="gradientLine" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style={{ stopColor: "#0077c0", stopOpacity: 1 }} />
+                  <stop offset="45%" style={{ stopColor: "#7c3aed", stopOpacity: 0.85 }} />
+                  <stop offset="100%" style={{ stopColor: "#c7eeff", stopOpacity: 0 }} />
                 </linearGradient>
-
-                {/* <!-- Mask to fade out bottom part --> */}
                 <mask id="fade-mask">
                   <circle cx="110" cy="110" r="105" fill="white" />
-                  <rect
-                    x="0"
-                    y="110"
-                    width="220"
-                    height="110"
-                    fill="url(#bottomFadeGradient)"
-                  />
+                  <rect x="0" y="110" width="220" height="110" fill="url(#bottomFadeGradient)" />
                 </mask>
-
-                {/* <!-- Gradient for bottom fade --> */}
                 <linearGradient id="bottomFadeGradient">
-                  <stop offset="0%" stop-color="white" stop-opacity="1" />
-                  <stop offset="100%" stop-color="white" stop-opacity="0" />
+                  <stop offset="0%" stopColor="white" stopOpacity="1" />
+                  <stop offset="100%" stopColor="white" stopOpacity="0" />
                 </linearGradient>
+                <filter id="ringGlow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="2.5" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
               </defs>
 
               <circle
@@ -116,28 +146,30 @@ export default function About() {
                 r="105"
                 fill="none"
                 stroke="url(#gradientLine)"
-                stroke-width="4"
-                stroke-linecap="round"
+                strokeWidth="4"
+                strokeLinecap="round"
                 mask="url(#fade-mask)"
+                filter="url(#ringGlow)"
                 className="origin-center animate-spin-slow"
               />
             </svg>
           </div>
 
-          {/* <!-- Gradient Circle Background --> */}
-          <div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 lg:w-64 sm:w-56 w-10/12 aspect-square bg-gradient-to-br from-[#0077C0] to-[#C7EEFF] rounded-full z-[-1]"
-          ></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 lg:w-64 sm:w-56 w-10/12 aspect-square">
+            <div className="w-full h-full rounded-full bg-linear-to-br from-[#0077C0] via-[#40A8DC] to-[#C7EEFF] shadow-[0_0_35px_-5px_rgba(0,119,192,0.6)] animate-pulse-slow"></div>
+          </div>
 
-          {/* <!-- Image --> */}
           <img
             src={profileImage}
             alt="Iza"
             className="sm:w-72 w-full mx-auto relative z-10 drop-shadow-[0_0_12px_rgba(0,0,0,1)] hover:scale-105 transition hover:-translate-y-1"
           />
         </div>
+
         <div className="w-full sm:w-3/5">
-          <div className="font-light leading-relaxed tracking-wide text-justify sm:text-sm lg:text-base">
+          <div
+            className={`font-light leading-relaxed tracking-wide text-[#E3E4ED] sm:text-sm lg:text-base ${visible ? "about-anim-text" : "opacity-0"}`}
+          >
             <p>
               Hi, my name is <span className="font-medium">Alfriza Akhmad Rahadi</span>, you can
               call me <span className="font-medium">Iza</span> or{" "}
@@ -162,21 +194,23 @@ export default function About() {
               development.
             </p>
           </div>
-          <div className="flex lg:gap-2 sm:gap-1.5 gap-1 flex-wrap lg:mt-3 mt-2">
-            {skills.map((skill) => {
+
+          <div className="flex lg:gap-2 sm:gap-1.5 gap-1.5 flex-wrap lg:mt-3 mt-2">
+            {skills.map((skill, i) => {
               const item = techStackRegistry[skill.techStack];
               const colorClasses: Record<string, string> = {
-                red: "border-red-200",
-                cyan: "border-cyan-200",
-                sky: "border-sky-200",
-                neutral: "border-neutral-200",
-                rose: "border-rose-200",
+                red: "border-red-500/30 hover:border-red-500/60 hover:bg-red-500/10",
+                cyan: "border-cyan-500/30 hover:border-cyan-500/60 hover:bg-cyan-500/10",
+                sky: "border-sky-500/30 hover:border-sky-500/60 hover:bg-sky-500/10",
+                neutral: "border-neutral-500/30 hover:border-neutral-500/60 hover:bg-neutral-500/10",
+                rose: "border-rose-500/30 hover:border-rose-500/60 hover:bg-rose-500/10",
               };
 
               return (
                 <span
                   key={skill.techStack}
-                  className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-xs font-medium transition-all duration-200 hover:-translate-y-1 ${colorClasses[skill.color] ?? "border-gray-200 text-gray-600 bg-gray-50"}`}
+                  style={visible ? { animationDelay: `${0.5 + i * 0.06}s` } : undefined}
+                  className={`inline-flex items-center gap-1.5 rounded-full border bg-white/5 px-3 py-1.5 text-xs font-medium text-gray-200 backdrop-blur-sm transition-colors duration-200 ${colorClasses[skill.color] ?? "border-gray-500/30 hover:border-gray-500/60 hover:bg-gray-500/10"} ${visible ? "about-anim-skill" : "opacity-0"}`}
                 >
                   {item.type === "image" ? (
                     <img src={item.logo} alt={item.name} className="h-4 w-4" />
@@ -191,23 +225,72 @@ export default function About() {
         </div>
       </div>
 
-      <div className="relative flex flex-col items-center gap-3 px-5 others sm:flex-row sm:px-8 sm:gap-5 sm:mt-5 mt-9">
-        <div className="w-full border border-[#C7EEFF] sm:aspect-2/1 max-sm:min-h-32 rounded-lg flex flex-col justify-center items-center p-2 relative overflow-hidden">
-          {/* Web Background Grid */}
-          <div className="absolute inset-0 bg-[length:40px_40px] bg-[linear-gradient(to_right,rgb(229,231,235)_1px,transparent_1px),linear-gradient(to_bottom,rgb(229,231,235)_1px,transparent_1px)] opacity-20 pointer-events-none z-0"></div>
+      <div className="relative flex flex-col items-center gap-3 px-5 others sm:flex-row lg:gap-4 sm:gap-3 sm:mt-5 mt-9">
 
-          {/* Web Elements */}
-          <div className="absolute inset-0 pointer-events-none opacity-10">
-            <div className="absolute w-16 h-16 bg-blue-200 rounded-full top-4 left-4"></div>
-            <div className="absolute w-24 h-24 bg-blue-300 rounded-full bottom-4 right-4"></div>
-          </div>
-          <h2 className="mb-3 text-xl font-bold lg:text-lg sm:text-sm">Social Media</h2>
-          <div className="flex justify-center space-x-5 sm:space-x-3 lg:space-x-4">
+        {/* Social Media */}
+        <div
+          style={visible ? { animationDelay: "0.55s" } : undefined}
+          className={`glow-border w-full border border-[#C7EEFF]/20 bg-white/2 backdrop-blur-sm sm:aspect-2/1 max-sm:min-h-32 rounded-xl flex flex-col justify-center items-center p-3 relative overflow-hidden transition-colors duration-300 hover:border-[#C7EEFF]/50 ${visible ? "about-anim-card" : "opacity-0"}`}
+        >
+          <svg
+            className="absolute inset-0 w-full h-full pointer-events-none z-0"
+            viewBox="0 0 400 200"
+            preserveAspectRatio="xMidYMid slice"
+            fill="none"
+          >
+            <defs>
+              <linearGradient id="netLineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#C7EEFF" stopOpacity="0.5" />
+                <stop offset="100%" stopColor="#0077C0" stopOpacity="0.15" />
+              </linearGradient>
+              <radialGradient id="netFade" cx="50%" cy="50%" r="65%">
+                <stop offset="0%" stopColor="white" stopOpacity="1" />
+                <stop offset="100%" stopColor="white" stopOpacity="0" />
+              </radialGradient>
+              <mask id="netMask">
+                <rect width="400" height="200" fill="url(#netFade)" />
+              </mask>
+            </defs>
+
+            <g mask="url(#netMask)">
+              <g stroke="url(#netLineGrad)" strokeWidth="1">
+                <line x1="40" y1="30" x2="120" y2="70" />
+                <line x1="120" y1="70" x2="90" y2="140" />
+                <line x1="120" y1="70" x2="210" y2="50" />
+                <line x1="210" y1="50" x2="280" y2="90" />
+                <line x1="280" y1="90" x2="350" y2="40" />
+                <line x1="280" y1="90" x2="330" y2="150" />
+                <line x1="90" y1="140" x2="180" y2="160" />
+                <line x1="180" y1="160" x2="280" y2="90" />
+                <line x1="40" y1="30" x2="15" y2="110" />
+                <line x1="15" y1="110" x2="90" y2="140" />
+                <line x1="210" y1="50" x2="230" y2="10" />
+                <line x1="180" y1="160" x2="120" y2="70" />
+              </g>
+              <g fill="#C7EEFF">
+                <circle cx="40" cy="30" r="2.5" />
+                <circle cx="120" cy="70" r="3" className="animate-pulse-slow" />
+                <circle cx="90" cy="140" r="2.5" />
+                <circle cx="210" cy="50" r="2.5" />
+                <circle cx="280" cy="90" r="3.5" className="animate-pulse-slow" />
+                <circle cx="350" cy="40" r="2" />
+                <circle cx="330" cy="150" r="2.5" />
+                <circle cx="180" cy="160" r="2.5" />
+                <circle cx="15" cy="110" r="2" />
+                <circle cx="230" cy="10" r="2" />
+              </g>
+            </g>
+          </svg>
+
+          <span className="relative z-10 mb-3 text-[11px] font-semibold uppercase tracking-widest text-gray-400 lg:text-[10px]">
+            Social Media
+          </span>
+          <div className="relative z-10 flex justify-center gap-5 sm:gap-3 lg:gap-4">
             <a
               href="https://github.com/alfreezzz"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-8 h-8 transition lg:w-7 lg:h-7 hover:rotate-12 hover:scale-105 sm:w-5 sm:h-5 mobile-m:w-10 mobile-m:h-10"
+              className="w-8 h-8 lg:w-7 lg:h-7 sm:w-6 sm:h-6 transition-transform duration-200 hover:scale-110"
             >
               <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <title>GitHub</title>
@@ -221,7 +304,7 @@ export default function About() {
               href="https://www.linkedin.com/in/alfriza-akhmad-rahadi"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-8 h-8 transition lg:w-7 lg:h-7 hover:rotate-12 hover:scale-105 sm:w-5 sm:h-5 mobile-m:w-10 mobile-m:h-10"
+              className="w-8 h-8 lg:w-7 lg:h-7 sm:w-6 sm:h-6 transition-transform duration-200 hover:scale-110"
             >
               <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <title>LinkedIn</title>
@@ -235,7 +318,7 @@ export default function About() {
               href="https://www.instagram.com/alfreezzz_/"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-8 h-8 transition lg:w-7 lg:h-7 hover:rotate-12 hover:scale-105 sm:w-5 sm:h-5 mobile-m:w-10 mobile-m:h-10"
+              className="w-8 h-8 lg:w-7 lg:h-7 sm:w-6 sm:h-6 transition-transform duration-200 hover:scale-110"
             >
               <svg role="img" fill="#FF0069" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <title>Instagram</title>
@@ -245,16 +328,17 @@ export default function About() {
           </div>
         </div>
 
-        <div className="hobbies w-full border border-[#C7EEFF] sm:aspect-2/1 max-sm:min-h-32 rounded-lg flex flex-col justify-center items-center p-2">
-          <h2 className="mb-1 text-xl font-bold lg:text-lg sm:text-sm">
-            <div className="relative inline-block px-3 font-bold text-white">
-              <span className="absolute inset-0 -skew-x-12 bg-gradient-to-tr from-red-700 via-red-600 to-red-500"></span>
-              <span className="relative italic">Hobbies</span>
-            </div>
-          </h2>
+        {/* Hobbies */}
+        <div
+          style={visible ? { animationDelay: "0.62s" } : undefined}
+          className={`glow-border hobbies w-full border border-[#C7EEFF]/20 sm:aspect-2/1 max-sm:min-h-32 rounded-xl flex flex-col justify-center items-center p-3 relative transition-colors duration-300 hover:border-[#C7EEFF]/50 ${visible ? "about-anim-card" : "opacity-0"}`}
+        >
+          <span className="relative mb-2 text-[11px] font-semibold uppercase tracking-widest text-gray-300 lg:text-[10px]">
+            Hobbies
+          </span>
           <div className="flex justify-center w-full gap-8">
             <svg
-              className="w-16 h-16 transition-all lg:w-12 lg:h-12 sm:w-8 sm:h-8 hover:animate-bounce"
+              className="w-14 h-14 lg:w-11 lg:h-11 sm:w-8 sm:h-8 transition-transform duration-200 hover:scale-110"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 -960 960 960"
               fill="#9D00FF"
@@ -262,7 +346,7 @@ export default function About() {
               <path d="M182-200q-51 0-79-35.5T82-322l42-300q9-60 53.5-99T282-760h396q60 0 104.5 39t53.5 99l42 300q7 51-21 86.5T778-200q-21 0-39-7.5T706-230l-90-90H344l-90 90q-15 15-33 22.5t-39 7.5Zm16-86 114-114h336l114 114q2 2 16 6 11 0 17.5-6.5T800-304l-44-308q-4-29-26-48.5T678-680H282q-30 0-52 19.5T204-612l-44 308q-2 11 4.5 17.5T182-280q2 0 16-6Zm482-154q17 0 28.5-11.5T720-480q0-17-11.5-28.5T680-520q-17 0-28.5 11.5T640-480q0 17 11.5 28.5T680-440Zm-80-120q17 0 28.5-11.5T640-600q0-17-11.5-28.5T600-640q-17 0-28.5 11.5T560-600q0 17 11.5 28.5T600-560ZM310-440h60v-70h70v-60h-70v-70h-60v70h-70v60h70v70Zm170-40Z" />
             </svg>
             <svg
-              className="w-16 h-16 transition-all lg:w-12 lg:h-12 sm:w-8 sm:h-8 hover:animate-pulse"
+              className="w-14 h-14 lg:w-11 lg:h-11 sm:w-8 sm:h-8 transition-transform duration-200 hover:scale-110"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 -960 960 960"
               fill="#40E0D0"
@@ -272,19 +356,26 @@ export default function About() {
           </div>
         </div>
 
-        <div className="w-full border border-[#C7EEFF] sm:aspect-2/1 max-sm:min-h-32 rounded-lg flex flex-col justify-center items-center p-2 relative overflow-hidden bg-[#18171777]">
+        {/* Repository */}
+        <div
+          style={visible ? { animationDelay: "0.69s" } : undefined}
+          className={`glow-border w-full border border-[#C7EEFF]/20 bg-white/2 backdrop-blur-sm sm:aspect-2/1 max-sm:min-h-32 rounded-xl flex flex-col justify-center items-center p-3 relative overflow-hidden transition-colors duration-300 hover:border-[#C7EEFF]/50 ${visible ? "about-anim-card" : "opacity-0"}`}
+        >
           <svg
-            className="absolute w-48 h-48 text-purple-200 opacity-10 -right-4 -bottom-4"
+            className="absolute w-44 h-44 text-purple-200 opacity-[0.06] -right-4 -bottom-4 pointer-events-none"
             fill="currentColor"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"
           >
             <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.605-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.236 1.911 1.236 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
           </svg>
-          <h2 className="lg:text-lg text-xl sm:text-xs font-bold text-[#0077C0]">Repository</h2>
-          <div className="flex items-center space-x-1 transition-transform duration-300 group">
+
+          <span className="relative z-10 mb-1 text-[11px] font-semibold uppercase tracking-widest text-gray-400 lg:text-[10px]">
+            Repository
+          </span>
+          <div className="relative z-10 flex items-center gap-1.5">
             <svg
-              className="sm:w-6 sm:h-6 lg:h-10 lg:w-10 h-12 w-12 text-purple-600 transform transition-transform duration-300 group-hover:scale-110 group-hover:-translate-x-0.5"
+              className="sm:w-6 sm:h-6 lg:h-9 lg:w-9 h-11 w-11 text-purple-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -297,28 +388,90 @@ export default function About() {
                 d="M8 9l3 3-3 3m5 0h3M5 20a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v12a2 2 0 01-2 2H5z"
               />
             </svg>
-            <span className="lg:text-2xl text-4xl sm:text-lg font-bold text-purple-800 transform transition-transform duration-300 group-hover:scale-110 group-hover:translate-x-0.5">
+            <span className="lg:text-2xl text-3xl sm:text-lg font-bold text-purple-300 tabular-nums">
               {repos}
             </span>
-            <span className="animate-blink border border-purple-800 h-8 sm:h-4 lg:h-6 mt-1.5 sm:mt-0.5 lg:mt-1 transition-transform duration-300 group-hover:scale-110 group-hover:translate-x-0.5"></span>
+            <span className="animate-blink border border-purple-400 h-7 sm:h-4 lg:h-6 mt-1"></span>
           </div>
-          <span className="text-sm text-gray-600 sm:text-xs lg:text-sm">Total Public Repos</span>
+          <span className="relative z-10 text-xs text-gray-500 sm:text-[10px] lg:text-xs">
+            Total Public Repos
+          </span>
         </div>
 
-        <div className="cv w-full border border-[#C7EEFF] sm:aspect-2/1 max-sm:min-h-32 rounded-lg flex flex-col justify-center items-center p-2">
+        {/* Download CV */}
+        <div
+          style={visible ? { animationDelay: "0.76s" } : undefined}
+          className={`glow-border cv w-full border border-[#C7EEFF]/20 sm:aspect-2/1 max-sm:min-h-32 rounded-xl flex flex-col justify-center items-center p-3 ${visible ? "about-anim-card" : "opacity-0"}`}
+        >
           <a
             href={cvFile}
             download
-            className="cursor-pointer group/download relative flex gap-1 px-8 sm:px-4 lg:text-base lg:px-6 sm:text-xs items-center py-4 sm:py-2 bg-[#5c5fe9] text-[#f1f1f1] rounded-3xl hover:bg-opacity-70 font-semibold shadow-xl active:shadow-inner transition-all duration-300"
+            className="cursor-pointer group/download relative flex gap-2 px-8 sm:px-5 lg:text-sm lg:px-6 sm:text-xs text-sm items-center py-3.5 sm:py-2.5 bg-[#5c5fe9] text-[#f1f1f1] rounded-full font-semibold shadow-lg shadow-[#5c5fe9]/20 transition-colors duration-200 hover:bg-[#4a4dd6] active:scale-[0.98]"
           >
-            {/* SVG icon sama seperti sebelumnya */}
             Download CV
-            <div className="absolute text-xs uppercase scale-0 rounded-md py-2 px-2 bg-[#5c5fe9] left-2/4 mb-3 bottom-full group-hover/download:scale-100 origin-bottom transition-all duration-300 shadow-lg before:content-[''] before:absolute before:top-full before:left-2/4 before:w-3 before:h-3 before:border-solid before:bg-[#5c5fe9] before:rotate-45 before:-translate-y-2/4 before:-translate-x-2/4">
+            <div className="absolute text-[10px] uppercase scale-0 rounded-md py-1.5 px-2 bg-[#5c5fe9] left-1/2 mb-3 bottom-full -translate-x-1/2 group-hover/download:scale-100 origin-bottom transition-transform duration-200 shadow-lg before:content-[''] before:absolute before:top-full before:left-1/2 before:w-2.5 before:h-2.5 before:bg-[#5c5fe9] before:rotate-45 before:-translate-y-1/2 before:-translate-x-1/2">
               <span>{fileSize}</span>
             </div>
           </a>
         </div>
       </div>
+
+      <style>{`
+        @keyframes aboutFadeUp {
+          0% {
+            opacity: 0;
+            transform: translateY(24px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes aboutFadeIn {
+          0% {
+            opacity: 0;
+          }
+          100% {
+            opacity: 1;
+          }
+        }
+
+        @keyframes aboutPopIn {
+          0% {
+            opacity: 0;
+            transform: translateY(16px) scale(0.96);
+          }
+          60% {
+            opacity: 1;
+            transform: translateY(-2px) scale(1.01);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+
+        .about-anim-title {
+          animation: aboutFadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0s forwards;
+        }
+
+        .about-anim-image {
+          animation: aboutFadeIn 0.8s ease-out 0.15s forwards;
+        }
+
+        .about-anim-text {
+          animation: aboutFadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards;
+        }
+
+        .about-anim-skill {
+          animation: aboutFadeUp 0.5s ease-out forwards;
+        }
+
+        .about-anim-card {
+          animation: aboutPopIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+      `}</style>
     </div>
   );
 }

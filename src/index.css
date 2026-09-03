@@ -32,7 +32,68 @@
   --honolulu-blue: #0077c0;
   --ice-blue: #C7EEFF;
 
-  --animate-spin-slow: spin 3s linear infinite;
+  --animate-spin-slow: spin-slow 8s linear infinite;
+  --animate-spin-reverse: spin-reverse 11s linear infinite;
+  --animate-pulse-slow: pulse-slow 4s ease-in-out infinite;
+  --animate-blink: blink 0.5s step-end infinite;
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-reverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes pulse-slow {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(0.97);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.03);
+  }
+}
+
+.glow-border {
+  position: relative;
+  --x: 50%;
+  --y: 50%;
+  --intensity: 0;
+}
+
+.glow-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(
+    220px circle at var(--x) var(--y),
+    rgba(199, 238, 255, 0.9),
+    rgba(124, 58, 237, 0.5) 40%,
+    transparent 65%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: var(--intensity);
+  transition: opacity 0.15s ease;
+  z-index: 1;
 }
 
 /* From Uiverse.io by jeremyssocial */
@@ -73,15 +134,18 @@
     background-size: var(--s) var(--s);
 }
 
-@keyframes notFoundIn {
-  from {
-    opacity: 0;
-    transform: translateY(24px) scale(0.98);
+@keyframes move {
+  0% {
+    background-position: 0 0;
   }
+  100% {
+    background-position: 40px 40px;
+  }
+}
 
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+@keyframes blink {
+  50% {
+    border-color: transparent;
   }
 }
 
