@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import TextType from "../components/TextType";
 import ShapeGrid from "../components/ShapeGrid";
 
@@ -6,21 +7,39 @@ export default function Hero(){
         { href: "#contact", label: "Contact me!" },
         { href: "#project", label: "My projects" },
     ];
+    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+        const updatePreference = () => setPrefersReducedMotion(mediaQuery.matches);
+
+        updatePreference();
+
+        if (typeof mediaQuery.addEventListener === "function") {
+            mediaQuery.addEventListener("change", updatePreference);
+            return () => mediaQuery.removeEventListener("change", updatePreference);
+        }
+
+        mediaQuery.addListener(updatePreference);
+        return () => mediaQuery.removeListener(updatePreference);
+    }, []);
 
     return(
         <div id="hero" className="relative overflow-hidden pb-64 lg:pb-32 sm:pb-48 min-h-screen">
-            <div className="absolute inset-0 z-0 pointer-events-auto">
-                <ShapeGrid 
-                    speed={0.5}
-                    squareSize={40}
-                    direction='diagonal' // up, down, left, right, diagonal
-                    borderColor="#2F293A"
-                    hoverFillColor='#222'
-                    shape='square' // square, hexagon, circle, triangle
-                    hoverTrailAmount={0} // number of trailing hovered shapes (0 = no trail)
-                    className="opacity-90"
-                />
-            </div>
+            {!prefersReducedMotion && (
+                <div className="absolute inset-0 z-0 pointer-events-auto">
+                    <ShapeGrid 
+                        speed={0.25}
+                        squareSize={40}
+                        direction='diagonal' // up, down, left, right, diagonal
+                        borderColor="#2F293A"
+                        hoverFillColor='#222'
+                        shape='square' // square, hexagon, circle, triangle
+                        hoverTrailAmount={0} // number of trailing hovered shapes (0 = no trail)
+                        className="opacity-90"
+                    />
+                </div>
+            )}
             <div className="relative z-10 px-3 pt-56 xl:px-32 sm:px-5 lg:pt-44 sm:pt-60">
 
                 {/* ===== Name Box — slide in dari kiri + sedikit overshoot ===== */}
@@ -42,11 +61,11 @@ export default function Hero(){
                 <div className="hero-anim-title">
                     <TextType 
                         text={["Hello World!", "Halooo!", "Sampurasun!", "こんにちは！", "你好！"]}
-                        typingSpeed={80}
-                        pauseDuration={2500}
-                        showCursor
+                        typingSpeed={prefersReducedMotion ? 2 : 80}
+                        pauseDuration={prefersReducedMotion ? 1200 : 2500}
+                        showCursor={!prefersReducedMotion}
                         cursorCharacter="_"
-                        deletingSpeed={50}
+                        deletingSpeed={prefersReducedMotion ? 2 : 50}
                         cursorBlinkDuration={0.5}
                         className="text-4xl mobile-m:text-5xl lg:text-9xl sm:text-8xl font-pixelsans mb-2"
                     />
@@ -168,6 +187,18 @@ export default function Hero(){
                 .hero-anim-btn {
                     opacity: 0;
                     animation: btnPopIn 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+                }
+
+                @media (prefers-reduced-motion: reduce) {
+                    .hero-anim-name,
+                    .hero-anim-title,
+                    .hero-anim-desc,
+                    .hero-anim-btn {
+                        animation: none !important;
+                        opacity: 1 !important;
+                        transform: none !important;
+                        filter: none !important;
+                    }
                 }
             `}</style>
         </div>
